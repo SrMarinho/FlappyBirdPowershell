@@ -11,7 +11,7 @@ class Bird {
         $this.app = $app
         $this.x = $x
         $this.y = $y
-        $this.color = "Yellow"
+        $this.color = "DarkYellow"
         $this.speed = 0
         $this.speedLimit = 2
         $this.jumpForce = 5

@@ -3,6 +3,7 @@ class Pipe {
   [double]$x
   [double]$y
   [double]$speed
+  [double]$width
   [double]$height
   [string]$orientation
 
@@ -11,19 +12,25 @@ class Pipe {
     $this.x = $x 
     $this.y = $y
     $this.speed = $speed
+    $this.width = 3
     $this.height = $height
     $this.orientation = $orientation
   }
 
   render() {
-      if ($this.y -ge 0 -and $this.y -lt $this.app.winHeight) {
-        if ($this.x -ge 0 -and $this.x -lt $this.app.winWidth) {
-          [Console]::SetCursorPosition($this.x, $this.y)
-          Write-Host '  ' -BackgroundColor $this.color
+    for ($i = 0; $i -lt $this.width.Count; $i++) {
+      for ($j = 0; $j -lt $this.width.Count; $j++) {
+        if ($this.app.insideScreen($this.app.width, $this.app.height, $this.x + $i, $this.y)) {
+            [Console]::SetCursorPosition($this.x + $i, $this.y)
+            Write-Host ' ' -BackgroundColor $this.color
         }
       }
+    }
+  }
+
+  pipeFloor () {
+        
   }
 }
 
 Export-ModuleMember -Function Pipe 
-
