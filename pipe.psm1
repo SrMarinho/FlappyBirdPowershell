@@ -2,35 +2,62 @@ class Pipe {
   [Object]$app
   [double]$x
   [double]$y
+  [double]$gapY
+  [double]$gapSize
   [double]$speed
   [double]$width
   [double]$height
   [string]$orientation
+  [string]$color
 
-  Pipe ([double] $height, [string] $orientation, [Object] $app) {
+  Pipe ([double] $x, [double] $gapY, [string] $orientation, [Object] $app) {
     $this.app = $app
     $this.x = $x 
-    $this.y = $y
-    $this.speed = $speed
+    $this.y = 0
+    $this.gapY = $gapY
+    $this.gapSize = 0.1
+    $this.speed = 1
     $this.width = 3
-    $this.height = $height
     $this.orientation = $orientation
+    $this.color = "DarkGreen"
+    $this.height = 0
+    $this.setHeight($this.gapY)
+    $this.setPosY($this.gapY)
   }
 
-  render() {
-    for ($i = 0; $i -lt $this.width.Count; $i++) {
-      for ($j = 0; $j -lt $this.width.Count; $j++) {
-        if ($this.app.insideScreen($this.app.width, $this.app.height, $this.x + $i, $this.y)) {
-            [Console]::SetCursorPosition($this.x + $i, $this.y)
-            Write-Host ' ' -BackgroundColor $this.color
-        }
-      }
+  [void] setHeight([double] $gapY) {
+    $gap = $this.app.winHeight * ($this.gapSize * 0.5)
+    $ceilHeight = $gapY - $gap
+    if ($this.orientation -eq 'ceil') {
+      $this.height = $ceilHeight
+      return
+    }
+    $this.height = $this.app.winHeight - $ceilHeight - $gap - 1
+  }
+
+  [void] setPosY([double] $gapY) {
+    $gap = $this.app.winHeight * ($this.gapSize * 0.5)
+    $ceilHeight = $gapY - $gap
+    if ($this.orientation -eq 'ceil') {
+      $this.y = 0
+      return
+    }
+    $this.y = $ceilHeight + $gap  - 1
+  }
+  
+  [void] event() {}
+
+  [void] update() {
+      $this.x -= $this.speed
+  }
+
+  [void] render() {
+    for ($i = $this.y; $i -lt $this.height; $i++) {
+        [Console]::SetCursorPosition($this.x, $this.y + $i)
+        Write-Host '   ' -BackgroundColor $this.color
     }
   }
 
-  pipeFloor () {
-        
-  }
 }
 
 Export-ModuleMember -Function Pipe 
